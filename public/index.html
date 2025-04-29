@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF OCR Table</title>
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
+</head>
+<body>
+  <h1>OCR Table Viewer</h1>
+  <button onclick="fetchData()">Fetch Table Data</button>
+
+  <div id="myGrid" class="ag-theme-alpine" style="height: 500px; width: 800px; margin-top: 20px;"></div>
+
+  <script>
+    async function fetchData() {
+      const response = await fetch('/upload-pdf', {
+        method: 'POST'
+      });
+      const data = await response.json();
+      console.log(data);
+
+      const columnDefs = Object.keys(data[0] || {}).map(key => ({
+        headerName: key,
+        field: key
+      }));
+
+      const gridOptions = {
+        columnDefs: columnDefs,
+        rowData: data,
+      };
+
+      const gridDiv = document.querySelector('#myGrid');
+      new agGrid.Grid(gridDiv, gridOptions);
+    }
+  </script>
+</body>
+</html>
